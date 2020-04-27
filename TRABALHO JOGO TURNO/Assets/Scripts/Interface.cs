@@ -107,8 +107,6 @@ public class Interface : MonoBehaviour
         {
             // Ativa a função BotaoConfirmar
             BotaoConfirmar();
-            // O painelNome será desativado
-            painelNome.SetActive(false);
         }
     }
 
@@ -116,8 +114,12 @@ public class Interface : MonoBehaviour
     public void BotaoConfirmar()
     {
         // Variável recebe texto escrito no inputField
-        nomeJogador = inputField.GetComponent<Text>().text;
+        nomeJogador = inputField.GetComponent<Text>().text;       
         // Esse mesmo texto é definido na interface do jogador como seu nome
         displayNomeJogador.GetComponent<Text>().text = nomeJogador;
+        //confirma se o valor de nomeJogador não é vazio
+        if (nomeJogador.Length != 0)        
+        // O painelNome será desativado
+        painelNome.SetActive(false);
     }
 }
