@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Batalha
 {
+
     // Função genérica que retorna o índice de ataque final
     public int Atacar(int ataqueRoll, int indiceModificador)
     {
@@ -12,4 +13,5 @@ public class Batalha
         // O resultado final de ataque é retornado
         return resultadoAtaque;
     }
+
 }
