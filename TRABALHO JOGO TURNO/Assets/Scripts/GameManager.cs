@@ -1,13 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class GameManager : MonoBehaviour
 {
     #region Variáveis
 
+    [SerializeField] private GameObject m_interface;
+
     public static Jogador jogador;
     public static NPC npc = new NPC();
+    public static event Action NaVitoria;
+    public static event Action NaDerrota;
 
     private Batalha batalha = new Batalha();
     private GeradorNumerico geradorNumerico = new GeradorNumerico();
@@ -15,8 +20,9 @@ public class GameManager : MonoBehaviour
     private int jogadorVida;
     private int curaMaxima;
     private float tempo;
-    private bool turno;
+    public bool turno;
     private bool ativarDefesa;
+    private bool fimDeJogo = false;
 
     #endregion
 
@@ -33,7 +39,18 @@ public class GameManager : MonoBehaviour
         // tempo do turno
         tempo = 2.0f;
     }
-    
+
+    private void Update()
+    {
+        if (jogador != null)
+        {
+            if (!fimDeJogo)
+            {
+                StartCoroutine("CicloDeJogo");
+            }
+        }
+    }
+
     // Função do botão 'ATACAR'
     public void JogadorAtacar()
     {
@@ -45,9 +62,6 @@ public class GameManager : MonoBehaviour
         {
             // Jogador usa o resultado de um dado + o ataque base dele para contabilizar o ataque da rodada
             indiceAtaqueJogador = batalha.Atacar(geradorNumerico.GerarNumeroAleatorio(1, 6), jogador.Ataque);
-
-            // ** INFORMAÇÃO NO CONSOLE PARA CONTROLE, REMOVER DEPOIS **
-            //Debug.Log("Ataque do jogador é de: " + geradorNumerico.GerarNumeroAleatorio(1, 6) + " | Ataque base: " + jogador.Ataque + " | A defesa do inimigo é de: " + npc.Defesa);
 
             // O ataque da rodada é diminuido pela defesa base do NPC   
             indiceAtaqueJogador = indiceAtaqueJogador - npc.Defesa;
@@ -76,12 +90,8 @@ public class GameManager : MonoBehaviour
             else
             {
                 // A vida do NPC é setada para 0
-                npc.Vida = 0;
-                
+                npc.Vida = 0;                
             }
-
-            // ** INFORMAÇÃO NO CONSOLE PARA CONTROLE, REMOVER DEPOIS **
-            //Debug.Log("Jogador atacou por: " + indiceAtaqueJogador + " | Inimigo tinha " + vidaNPC + " de vida, e ficou com " + npc.Vida);
         }
     }
 
@@ -109,7 +119,7 @@ public class GameManager : MonoBehaviour
         int cura;
         jogadorVida = jogador.Vida;
         vidaNPC = npc.Vida;
-        curaMaxima = jogador.CuraMaxima;
+        curaMaxima = jogador.VidaInicial;
         
 
         // O jogador só se cura se a vida do NPC for maior que zero e for o turno do jogador
@@ -124,22 +134,20 @@ public class GameManager : MonoBehaviour
             Debug.Log("o valor de cura é " + cura);
 
             //condição para a cura acontecer e não execeder o limite de vida do jogador
-                if(cura >= curaMaxima)
-                {
-                    jogador.Vida = curaMaxima;
-                    Debug.Log("a vida é " + jogador.Vida);
-                    StartCoroutine("TempoTurno");
-                }
-                //se não execedeu então a cura vai ser realizada com base no resultado do indicador
-                else
-                {
-                    jogador.Vida += indiceCuraJogador;
-                    Debug.Log("else vida é " + jogador.Vida);
-                    StartCoroutine("TempoTurno");
-                }           
-            
+            if(cura >= curaMaxima)
+            {
+                jogador.Vida = curaMaxima;
+                Debug.Log("a vida é " + jogador.Vida);
+                StartCoroutine("TempoTurno");
+            }
+            //se não execedeu então a cura vai ser realizada com base no resultado do indicador
+            else
+            {
+                jogador.Vida += indiceCuraJogador;
+                Debug.Log("else vida é " + jogador.Vida);
+                StartCoroutine("TempoTurno");
+            }           
         }
-
     }
 
     // Função do botão Hab.2
@@ -156,10 +164,7 @@ public class GameManager : MonoBehaviour
         {
             // Jogador usa o resultado de um dado + o ataque base dele para contabilizar o ataque da rodada
             indiceAtaqueJogador = batalha.Atacar(geradorNumerico.GerarNumeroAleatorio(1, 6), jogador.Ataque) * multiplicadorAtq;
-
-            // ** INFORMAÇÃO NO CONSOLE PARA CONTROLE, REMOVER DEPOIS **
-            //Debug.Log("Ataque do jogador é de: " + geradorNumerico.GerarNumeroAleatorio(1, 6) + " | Ataque base: " + jogador.Ataque + " | o multiplicador é  " + multiplicadorAtq + "| A defesa do inimigo é de: " + npc.Defesa);
-
+            
             // O ataque da rodada é diminuido pela defesa base do NPC   
             indiceAtaqueJogador = indiceAtaqueJogador - npc.Defesa;
 
@@ -189,9 +194,6 @@ public class GameManager : MonoBehaviour
                 npc.Vida = 0;
 
             }
-
-            // ** INFORMAÇÃO NO CONSOLE PARA CONTROLE, REMOVER DEPOIS **
-            //Debug.Log("Jogador atacou por: " + indiceAtaqueJogador + " | Inimigo tinha " + vidaNPC + " de vida, e ficou com " + npc.Vida);
         }
     }
 
@@ -245,8 +247,7 @@ public class GameManager : MonoBehaviour
                 // A vida do Jogador é setada para 0
                 jogador.Vida = 0;
                 turno = false;
-            }        
-                        
+            }                                
         }
 
         if (jogadorVida > 0 && ativarDefesa == false)
@@ -303,11 +304,55 @@ public class GameManager : MonoBehaviour
 
         // condição para mudar o turno
         if (jogadorVida > 0 && vidaNPC > 0)
-        {           
-           
-            turno = true;            
-            
+        {
+            turno = true;                        
         }
         Debug.Log("fim da coroutina e inicio do turno do jogador " + turno);
+    }
+
+    // Corotina que controla o ciclo de jogo, gerando mais inimigos e ativando a ação de fim de jogo 
+    IEnumerator CicloDeJogo()
+    {
+        if (!fimDeJogo)
+        {
+            // Se o NPC morreu e ainda faltam inimigos na lista
+            if (npc.Vida == 0 && npc.IndiceNPC < 5)
+            {
+                // Outro inimigo é gerado
+                npc.GerarNPC();
+            }
+
+            // Se o jogador morreu e ainda restam tentativas
+            if(jogador.Vida == 0 && jogador.TentativasJogador > 0)
+            {
+                // Se a interface de derrota não estiver ativa
+                if (!m_interface.GetComponent<Interface>().painelDerrota.activeInHierarchy)
+                {
+                    // Uma tentativa do jogador é tirada
+                    jogador.DiminuirTentativasJogador();
+                    // Ação de derrota é iniciada
+                    NaDerrota.Invoke();
+
+                    yield return new WaitForSeconds(tempo);
+                }
+            }
+        }
+
+        // Se o último NPC morreu
+        if(npc.Vida == 0 && npc.IndiceNPC == 5)
+        {
+            fimDeJogo = true;
+            yield return new WaitForSeconds(tempo);
+            NaVitoria.Invoke();
+            Debug.Log("VITORIA");
+        }
+
+        // Se o jogador morreu e não há mais tentativas
+        if(jogador.Vida == 0 && jogador.TentativasJogador == 0)
+        {
+            fimDeJogo = true;
+            NaDerrota.Invoke();
+            Debug.Log("DERROTA");
+        }
     }
 }

@@ -6,13 +6,15 @@ public abstract class Jogador
 {
     #region Variáveis
 
-    public string NomeClasse { get; set; }
-    public int Vida{ get; set; }
-    public int Ataque { get; set; }
-    public int Defesa { get; set; }
-    public int IndiceHabilidadeCura { get; set; }
-    public int IndiceHabilidadeAtaque { get; set; }
-    public int CuraMaxima { get; set; }
+    public string NomeClasse;
+    public int Vida;
+    public int Ataque;
+    public int Defesa;
+    public int IndiceHabilidadeCura;
+    public int IndiceHabilidadeAtaque;
+    public int VidaInicial;
+    public int TentativasJogador { get; protected set; }
+
     #endregion
 
     // ** INFORMAÇÃO NO CONSOLE PARA CONTROLE, REMOVER DEPOIS **
@@ -28,6 +30,17 @@ public abstract class Jogador
 
     // Função abstrata que define atributos de classe
     public abstract void DefinirClasse();
+
+    // Função para remover uma tentativa do jogador
+    public void DiminuirTentativasJogador()
+    {
+        TentativasJogador -= 1;
+    }
+
+    public void DefinirVidaJogador(int vida)
+    {
+        Vida = vida;
+    }
 }
 
 public class Classe1 : Jogador
@@ -36,12 +49,13 @@ public class Classe1 : Jogador
     public override void DefinirClasse()
     {
         NomeClasse = "Classe1";
-        Vida = 50;
+        Vida = 10;
         Ataque = 1;
         Defesa = 1;
-        CuraMaxima = 50;
+        VidaInicial = Vida;
         IndiceHabilidadeCura = 1;
         IndiceHabilidadeAtaque = 1;
+        TentativasJogador = 3;
     }
 }
 
@@ -54,9 +68,10 @@ public class Classe2 : Jogador
         Vida = 70;
         Ataque = 2;
         Defesa = 2;
-        CuraMaxima = 70;
+        VidaInicial = Vida;
         IndiceHabilidadeCura = 2;
         IndiceHabilidadeAtaque = 2;
+        TentativasJogador = 3;
     }
 }
 
@@ -69,8 +84,9 @@ public class Classe3 : Jogador
         Vida = 100;
         Ataque = 3;
         Defesa = 3;
-        CuraMaxima = 100;
+        VidaInicial = Vida;
         IndiceHabilidadeCura = 3;
         IndiceHabilidadeAtaque = 3;
+        TentativasJogador = 3;
     }
 }
