@@ -12,7 +12,7 @@ public abstract class Jogador
     public int Defesa { get; set; }
     public int IndiceHabilidadeCura { get; set; }
     public int IndiceHabilidadeAtaque { get; set; }
-
+    public int CuraMaxima { get; set; }
     #endregion
 
     // ** INFORMAÇÃO NO CONSOLE PARA CONTROLE, REMOVER DEPOIS **
@@ -39,6 +39,7 @@ public class Classe1 : Jogador
         Vida = 50;
         Ataque = 1;
         Defesa = 1;
+        CuraMaxima = 50;
         IndiceHabilidadeCura = 1;
         IndiceHabilidadeAtaque = 1;
     }
@@ -53,6 +54,7 @@ public class Classe2 : Jogador
         Vida = 70;
         Ataque = 2;
         Defesa = 2;
+        CuraMaxima = 70;
         IndiceHabilidadeCura = 2;
         IndiceHabilidadeAtaque = 2;
     }
@@ -67,6 +69,7 @@ public class Classe3 : Jogador
         Vida = 100;
         Ataque = 3;
         Defesa = 3;
+        CuraMaxima = 100;
         IndiceHabilidadeCura = 3;
         IndiceHabilidadeAtaque = 3;
     }
