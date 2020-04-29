@@ -7,10 +7,15 @@ public class Interface : MonoBehaviour
 {
     #region Variáveis
 
-    [SerializeField] private GameObject painelJogar, painelClasse, painelNome, inputField, displayNomeJogador, displayClasseJogador, displayVidaJogador, displayVidaNPC;
+    [SerializeField] private GameObject painelJogar, painelClasse, painelNome, painelVitoria, inputField, displayNomeJogador, displayClasseJogador, displayVidaJogador,
+     displayVidaNPC, displayIndiceNPC, gameManager, botaoTentarNovamente;
+
+    public GameObject painelDerrota;
+
+    [SerializeField] private Button botaoAtacar, botaoDefender, botaoHab1, botaoHab2;
 
     public string nomeJogador, classeJogador;
-    private int vidaJogador, vidaNPC;
+    private int vidaJogador, vidaNPC, indiceNPC;
 
     #endregion Variáveis
 
@@ -28,8 +33,24 @@ public class Interface : MonoBehaviour
         if (GameManager.jogador != null)
         {
             // Atualizar a interface com as vidas atuais
-            AtualizarVidasUI();
+            AtualizarInfoUI();
         }
+
+        // Muda as cores dos botões para mostrar que eles não podem ser clicados
+        if (gameManager.GetComponent<GameManager>().turno == false)
+        {
+            botaoAtacar.GetComponent<Image>().color = Color.gray;
+            botaoDefender.GetComponent<Image>().color = Color.gray;
+            botaoHab1.GetComponent<Image>().color = Color.gray;
+            botaoHab2.GetComponent<Image>().color = Color.gray;
+        }
+        else
+        {
+            botaoAtacar.GetComponent<Image>().color = Color.white;
+            botaoDefender.GetComponent<Image>().color = Color.white;
+            botaoHab1.GetComponent<Image>().color = Color.white;
+            botaoHab2.GetComponent<Image>().color = Color.white;
+        }            
     }
 
     // Função para ativar ou desativar o painelJogar
@@ -156,11 +177,62 @@ public class Interface : MonoBehaviour
         displayClasseJogador.GetComponent<Text>().text = classeJogador;
     }
 
-    public void AtualizarVidasUI()
+    // Função para resetar a vida do jogador e desativar o painel de derrota por um botão
+    public void BotaoTentarNovamente()
     {
+        GameManager.jogador.Vida = GameManager.jogador.VidaInicial;
+        painelDerrota.SetActive(false);
+    }
+
+    // Função que atualiza a UI com as informações de vida e nome do NPC
+    public void AtualizarInfoUI()
+    {
+        // Variável recebe a quantidade de vida do jogador
         vidaJogador = GameManager.jogador.Vida;
+        // Associada a variável de vida do jogador com a interface
         displayVidaJogador.GetComponent<Text>().text = vidaJogador.ToString();
+        // Variável recebe a quantidade de vida do NPC
         vidaNPC = GameManager.npc.Vida;
+        // Associada a variável de vida do NPC com a interface
         displayVidaNPC.GetComponent<Text>().text = vidaNPC.ToString();
+        // Variável recebe índice do NPC
+        indiceNPC = GameManager.npc.IndiceNPC;
+        // Associada o índice do NPC com a interface
+        displayIndiceNPC.GetComponent<Text>().text = indiceNPC.ToString();
+    }
+
+    // Função que ativa a tela de vitória
+    public void AtivarTelaVitoria()
+    {
+        painelVitoria.SetActive(true);
+    }
+
+    // Função que ativa a tela de derrota
+    public void AtivarTelaDerrota()
+    {
+        // Se o jogador ainda tiver tentativas restando
+        if (GameManager.jogador.TentativasJogador > 0)
+        {
+            painelDerrota.SetActive(true);
+        }
+
+        // Se o jogador não tiver mais tentativas
+        if(GameManager.jogador.TentativasJogador == 0)
+        {
+            painelDerrota.SetActive(true);
+            botaoTentarNovamente.SetActive(false);
+        }
+    }
+
+    private void OnEnable()
+    {
+        GameManager.NaVitoria += AtivarTelaVitoria;
+        GameManager.NaDerrota += AtivarTelaDerrota;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.NaVitoria -= AtivarTelaVitoria;
+        GameManager.NaDerrota -= AtivarTelaDerrota;
     }
 }
