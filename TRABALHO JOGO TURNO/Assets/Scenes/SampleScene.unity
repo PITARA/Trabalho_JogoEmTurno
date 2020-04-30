@@ -3056,7 +3056,7 @@ GameObject:
   - component: {fileID: 1032781437}
   - component: {fileID: 1032781436}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: Batalha
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3995,7 +3995,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e2a64e62d2273947956e26662111966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  linhasMaximas: 8
 --- !u!1 &1345336792
 GameObject:
   m_ObjectHideFlags: 0
@@ -6982,7 +6981,7 @@ MonoBehaviour:
   displayVidaJogador: {fileID: 494802590}
   displayVidaNPC: {fileID: 474533712}
   displayIndiceNPC: {fileID: 144171927}
-  gameManager: {fileID: 1032781435}
+  batalha: {fileID: 1032781435}
   botaoTentarNovamente: {fileID: 540700915}
   painelDerrota: {fileID: 1323896618}
   botaoAtacar: {fileID: 1656744550}

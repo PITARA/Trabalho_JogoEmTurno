@@ -35,7 +35,6 @@ public class LogEventos : MonoBehaviour
         }
     }
 
-
     void OnGUI()
     {
         // Define o tamanho da fonte que aparece no log

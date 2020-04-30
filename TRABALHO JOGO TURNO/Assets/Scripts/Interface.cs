@@ -9,7 +9,7 @@ public class Interface : MonoBehaviour
 
     [SerializeField]
     private GameObject painelJogar, painelClasse, painelNome, painelVitoria, inputField, displayNomeJogador, displayClasseJogador, displayVidaJogador,
-     displayVidaNPC, displayIndiceNPC, gameManager, botaoTentarNovamente;
+     displayVidaNPC, displayIndiceNPC, batalha, botaoTentarNovamente;
 
     public GameObject painelDerrota;
 
@@ -23,8 +23,7 @@ public class Interface : MonoBehaviour
     private int vidaJogador, vidaNPC, indiceNPC;
 
     private Color corPadraoBotoes = new Color(66, 214, 255);
-    private GameManager logEventos;
-
+    
     #endregion
 
     private void Awake()
@@ -41,14 +40,14 @@ public class Interface : MonoBehaviour
     {
         
         // Se o jogador tiver sido gerado
-        if (GameManager.jogador != null)
+        if (Batalha.jogador != null)
         {
             // Atualizar a interface com as vidas atuais
             AtualizarInfoUI();
         }
 
         // Muda as cores dos botões para mostrar que eles não podem ser clicados
-        if (gameManager.GetComponent<GameManager>().turno == false)
+        if (batalha.GetComponent<Batalha>().turno == false)
         {
             botaoAtacar.GetComponent<Image>().color = Color.gray;
             botaoDefender.GetComponent<Image>().color = Color.gray;
@@ -91,14 +90,14 @@ public class Interface : MonoBehaviour
         }
         else // Se o painelClasse estiver ativo na hierarquia
         {
-            GameManager.jogador = new Classe1();
+            Batalha.jogador = new Classe1();
 
             // O painelClasse será desativado
             painelClasse.SetActive(false);
             // A classe do jogador será definida como Classe1
-            GameManager.jogador.DefinirClasse();
+            Batalha.jogador.DefinirClasse();
             // Nome da classe do jogador é alocado em variável que será usada pela interface
-            classeJogador = GameManager.jogador.NomeClasse;
+            classeJogador = Batalha.jogador.NomeClasse;
 
             // Imagem da classe escolhida pelo player é definida na interface
             imagemClasseEscolhida.texture = imagemClasseAlcooGel.texture;
@@ -116,14 +115,14 @@ public class Interface : MonoBehaviour
         }
         else // Se o painelClasse estiver ativo na hierarquia
         {
-            GameManager.jogador = new Classe2();
+            Batalha.jogador = new Classe2();
 
             // O painelClasse será desativado
             painelClasse.SetActive(false);
             // A classe do jogador será definida como Classe2
-            GameManager.jogador.DefinirClasse();
+            Batalha.jogador.DefinirClasse();
             // Nome da classe do jogador é alocado em variável que será usada pela interface
-            classeJogador = GameManager.jogador.NomeClasse;
+            classeJogador = Batalha.jogador.NomeClasse;
 
             // Imagem da classe escolhida pelo player é definida na interface
             imagemClasseEscolhida.texture = imagemClasseSabao.texture;
@@ -141,14 +140,14 @@ public class Interface : MonoBehaviour
         }
         else // Se o painelClasse estiver ativo na hierarquia
         {
-            GameManager.jogador = new Classe3();
+            Batalha.jogador = new Classe3();
 
             // O painelClasse será desativado
             painelClasse.SetActive(false);
             // A classe do jogador será definida como Classe3
-            GameManager.jogador.DefinirClasse();
+            Batalha.jogador.DefinirClasse();
             // Nome da classe do jogador é alocado em variável que será usada pela interface
-            classeJogador = GameManager.jogador.NomeClasse;
+            classeJogador = Batalha.jogador.NomeClasse;
 
             // Imagem da classe escolhida pelo player é definida na interface
             imagemClasseEscolhida.texture = imagemClasseMascara.texture;
@@ -191,9 +190,9 @@ public class Interface : MonoBehaviour
     // Função para resetar a vida do jogador e desativar o painel de derrota por um botão
     public void BotaoTentarNovamente()
     {
-        GameManager.jogador.Vida = GameManager.jogador.VidaInicial;
+        Batalha.jogador.Vida = Batalha.jogador.VidaInicial;
         painelDerrota.SetActive(false);
-        gameManager.GetComponent<GameManager>().logEventos.SetActive(true);
+        batalha.GetComponent<Batalha>().logEventos.SetActive(true);
         Debug.Log("funcionou?");
     }
 
@@ -201,15 +200,15 @@ public class Interface : MonoBehaviour
     public void AtualizarInfoUI()
     {
         // Variável recebe a quantidade de vida do jogador
-        vidaJogador = GameManager.jogador.Vida;
+        vidaJogador = Batalha.jogador.Vida;
         // Associada a variável de vida do jogador com a interface
         displayVidaJogador.GetComponent<Text>().text = vidaJogador.ToString();
         // Variável recebe a quantidade de vida do NPC
-        vidaNPC = GameManager.npc.Vida;
+        vidaNPC = Batalha.npc.Vida;
         // Associada a variável de vida do NPC com a interface
         displayVidaNPC.GetComponent<Text>().text = vidaNPC.ToString();
         // Variável recebe índice do NPC
-        indiceNPC = GameManager.npc.IndiceNPC;
+        indiceNPC = Batalha.npc.IndiceNPC;
         // Associada o índice do NPC com a interface
         displayIndiceNPC.GetComponent<Text>().text = indiceNPC.ToString();
     }
@@ -218,24 +217,25 @@ public class Interface : MonoBehaviour
     public void AtivarTelaVitoria()
     {
         painelVitoria.SetActive(true);
+        batalha.GetComponent<Batalha>().logEventos.SetActive(false);
     }
 
     // Função que ativa a tela de derrota
     public void AtivarTelaDerrota()
     {
         // Se o jogador ainda tiver tentativas restando
-        if (GameManager.jogador.TentativasJogador > 0)
+        if (Batalha.jogador.TentativasJogador > 0)
         {
             painelDerrota.SetActive(true);
-            gameManager.GetComponent<GameManager>().logEventos.SetActive(false);
+            batalha.GetComponent<Batalha>().logEventos.SetActive(false);
         }
 
         // Se o jogador não tiver mais tentativas
-        if(GameManager.jogador.TentativasJogador == 0)
+        if(Batalha.jogador.TentativasJogador == 0)
         {
             painelDerrota.SetActive(true);
             botaoTentarNovamente.SetActive(false);
-            gameManager.GetComponent<GameManager>().logEventos.SetActive(false);
+            batalha.GetComponent<Batalha>().logEventos.SetActive(false);
         }
     }
 
@@ -262,13 +262,13 @@ public class Interface : MonoBehaviour
 
     private void OnEnable()
     {
-        GameManager.NaVitoria += AtivarTelaVitoria;
-        GameManager.NaDerrota += AtivarTelaDerrota;
+        Batalha.NaVitoria += AtivarTelaVitoria;
+        Batalha.NaDerrota += AtivarTelaDerrota;
     }
 
     private void OnDisable()
     {
-        GameManager.NaVitoria -= AtivarTelaVitoria;
-        GameManager.NaDerrota -= AtivarTelaDerrota;
+        Batalha.NaVitoria -= AtivarTelaVitoria;
+        Batalha.NaDerrota -= AtivarTelaDerrota;
     }
 }
