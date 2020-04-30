@@ -49,12 +49,12 @@ public class Classe1 : Jogador
     public override void DefinirClasse()
     {
         NomeClasse = "ÁLCOOL GEL";
-        Vida = 10;
-        Ataque = 1;
-        Defesa = 1;
+        Vida = 70;
+        Ataque = 2;
+        Defesa = 2;
         VidaInicial = Vida;
-        IndiceHabilidadeCura = 1;
-        IndiceHabilidadeAtaque = 1;
+        IndiceHabilidadeCura = 2;
+        IndiceHabilidadeAtaque = 2;
         TentativasJogador = 3;
     }
 }
@@ -65,9 +65,9 @@ public class Classe2 : Jogador
     public override void DefinirClasse()
     {
         NomeClasse = "SABÃO";
-        Vida = 70;
-        Ataque = 2;
-        Defesa = 2;
+        Vida = 60;
+        Ataque = 3;
+        Defesa = 3;
         VidaInicial = Vida;
         IndiceHabilidadeCura = 2;
         IndiceHabilidadeAtaque = 2;
@@ -81,12 +81,12 @@ public class Classe3 : Jogador
     public override void DefinirClasse()
     {
         NomeClasse = "MÁSCARA";
-        Vida = 100;
-        Ataque = 3;
-        Defesa = 3;
+        Vida = 50;
+        Ataque = 1;
+        Defesa = 1;
         VidaInicial = Vida;
-        IndiceHabilidadeCura = 3;
-        IndiceHabilidadeAtaque = 3;
+        IndiceHabilidadeCura = 2;
+        IndiceHabilidadeAtaque = 2;
         TentativasJogador = 3;
     }
 }
