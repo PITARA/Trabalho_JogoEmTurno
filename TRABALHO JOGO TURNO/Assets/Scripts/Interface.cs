@@ -14,10 +14,16 @@ public class Interface : MonoBehaviour
 
     [SerializeField] private Button botaoAtacar, botaoDefender, botaoHab1, botaoHab2;
 
+    [SerializeField] private RawImage imagemClasseEscolhida, imagemClasseAlcooGel, imagemClasseSabao, imagemClasseMascara;
+
+    public Material materialNPC, materialDetalhesNPC;
+
     public string nomeJogador, classeJogador;
     private int vidaJogador, vidaNPC, indiceNPC;
 
-    #endregion Variáveis
+    private Color corPadraoBotoes = new Color(66, 214, 255);
+
+    #endregion
 
     private void Awake()
     {
@@ -46,11 +52,11 @@ public class Interface : MonoBehaviour
         }
         else
         {
-            botaoAtacar.GetComponent<Image>().color = Color.white;
-            botaoDefender.GetComponent<Image>().color = Color.white;
-            botaoHab1.GetComponent<Image>().color = Color.white;
-            botaoHab2.GetComponent<Image>().color = Color.white;
-        }            
+            botaoAtacar.GetComponent<Image>().color = corPadraoBotoes;
+            botaoDefender.GetComponent<Image>().color = corPadraoBotoes;
+            botaoHab1.GetComponent<Image>().color = corPadraoBotoes;
+            botaoHab2.GetComponent<Image>().color = corPadraoBotoes;
+        }
     }
 
     // Função para ativar ou desativar o painelJogar
@@ -89,8 +95,8 @@ public class Interface : MonoBehaviour
             // Nome da classe do jogador é alocado em variável que será usada pela interface
             classeJogador = GameManager.jogador.NomeClasse;
 
-            // ** INFORMAÇÃO NO CONSOLE PARA CONTROLE, REMOVER DEPOIS **
-            GameManager.jogador.PegarInfo();
+            // Imagem da classe escolhida pelo player é definida na interface
+            imagemClasseEscolhida.texture = imagemClasseAlcooGel.texture;
         }
     }
 
@@ -114,8 +120,8 @@ public class Interface : MonoBehaviour
             // Nome da classe do jogador é alocado em variável que será usada pela interface
             classeJogador = GameManager.jogador.NomeClasse;
 
-            // ** INFORMAÇÃO NO CONSOLE PARA CONTROLE, REMOVER DEPOIS **
-            GameManager.jogador.PegarInfo();
+            // Imagem da classe escolhida pelo player é definida na interface
+            imagemClasseEscolhida.texture = imagemClasseSabao.texture;
         }
     }
 
@@ -139,8 +145,8 @@ public class Interface : MonoBehaviour
             // Nome da classe do jogador é alocado em variável que será usada pela interface
             classeJogador = GameManager.jogador.NomeClasse;
 
-            // ** INFORMAÇÃO NO CONSOLE PARA CONTROLE, REMOVER DEPOIS **
-            GameManager.jogador.PegarInfo();
+            // Imagem da classe escolhida pelo player é definida na interface
+            imagemClasseEscolhida.texture = imagemClasseMascara.texture;
         }
     }
 
@@ -222,6 +228,27 @@ public class Interface : MonoBehaviour
             painelDerrota.SetActive(true);
             botaoTentarNovamente.SetActive(false);
         }
+    }
+
+    public void DefinirCorNPC()
+    {
+        // Pega uma cor aleatória para o NPC
+        Color novaCor = new Color(Random.value, Random.value, Random.value, 1.0f);
+        // Define o NPC com cor nova
+        materialNPC.color = novaCor;
+
+        // Pega uma cor aleatória para os detalhes do NPC
+        Color novaCorDetalhes = new Color(Random.value, Random.value, Random.value, 1.0f);
+        
+        // Enquanto a cor do NPC for igual a cor dos detalhes dele
+        while (novaCor == novaCorDetalhes)
+        {
+            // Uma nova cor será escolhida
+            novaCorDetalhes = new Color(Random.value, Random.value, Random.value, 1.0f);           
+        }
+
+        // Define os detalhes do NPC com a cor nova
+        materialDetalhesNPC.color = novaCorDetalhes;
     }
 
     private void OnEnable()

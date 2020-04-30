@@ -48,7 +48,7 @@ public class Classe1 : Jogador
     // Função que dá override na função abstrata da classe Classe que define atributos como Classe1
     public override void DefinirClasse()
     {
-        NomeClasse = "Classe1";
+        NomeClasse = "ÁLCOOL GEL";
         Vida = 10;
         Ataque = 1;
         Defesa = 1;
@@ -64,7 +64,7 @@ public class Classe2 : Jogador
     // Função que dá override na função abstrata da classe Classe que define atributos como Classe2
     public override void DefinirClasse()
     {
-        NomeClasse = "Classe2";
+        NomeClasse = "SABÃO";
         Vida = 70;
         Ataque = 2;
         Defesa = 2;
@@ -80,7 +80,7 @@ public class Classe3 : Jogador
     // Função que dá override na função abstrata da classe Classe que define atributos como Classe3
     public override void DefinirClasse()
     {
-        NomeClasse = "Classe3";
+        NomeClasse = "MÁSCARA";
         Vida = 100;
         Ataque = 3;
         Defesa = 3;
