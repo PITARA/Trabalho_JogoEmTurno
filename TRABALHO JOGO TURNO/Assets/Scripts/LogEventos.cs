@@ -6,7 +6,7 @@ public class LogEventos : MonoBehaviour
 {
     #region Variáveis
 
-    public int linhasMaximas = 2;
+    private int linhasMaximas = 10;
 
     private Queue<string> fila = new Queue<string>();
     private string MeuTexto = "";

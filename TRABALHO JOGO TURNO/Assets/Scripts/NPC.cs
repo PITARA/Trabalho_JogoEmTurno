@@ -21,7 +21,7 @@ public class NPC
     {
         IndiceNPC += 1;
 
-        Vida = geradorNumerico.GerarNumeroAleatorio(50, 100);
+        Vida = geradorNumerico.GerarNumeroAleatorio(50, 80);
         Ataque = geradorNumerico.GerarNumeroAleatorio(1, 3);
         Defesa = geradorNumerico.GerarNumeroAleatorio(1, 3);
     }

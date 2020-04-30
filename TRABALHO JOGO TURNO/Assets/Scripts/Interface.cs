@@ -7,7 +7,8 @@ public class Interface : MonoBehaviour
 {
     #region Variáveis
 
-    [SerializeField] private GameObject painelJogar, painelClasse, painelNome, painelVitoria, inputField, displayNomeJogador, displayClasseJogador, displayVidaJogador,
+    [SerializeField]
+    private GameObject painelJogar, painelClasse, painelNome, painelVitoria, inputField, displayNomeJogador, displayClasseJogador, displayVidaJogador,
      displayVidaNPC, displayIndiceNPC, gameManager, botaoTentarNovamente;
 
     public GameObject painelDerrota;
@@ -22,6 +23,7 @@ public class Interface : MonoBehaviour
     private int vidaJogador, vidaNPC, indiceNPC;
 
     private Color corPadraoBotoes = new Color(66, 214, 255);
+    private GameManager logEventos;
 
     #endregion
 
@@ -31,10 +33,13 @@ public class Interface : MonoBehaviour
         painelJogar.SetActive(true);
         painelClasse.SetActive(true);
         painelNome.SetActive(true);
+        
+        
     }
 
     private void Update()
     {
+        
         // Se o jogador tiver sido gerado
         if (GameManager.jogador != null)
         {
@@ -188,6 +193,8 @@ public class Interface : MonoBehaviour
     {
         GameManager.jogador.Vida = GameManager.jogador.VidaInicial;
         painelDerrota.SetActive(false);
+        gameManager.GetComponent<GameManager>().logEventos.SetActive(true);
+        Debug.Log("funcionou?");
     }
 
     // Função que atualiza a UI com as informações de vida e nome do NPC
@@ -220,6 +227,7 @@ public class Interface : MonoBehaviour
         if (GameManager.jogador.TentativasJogador > 0)
         {
             painelDerrota.SetActive(true);
+            gameManager.GetComponent<GameManager>().logEventos.SetActive(false);
         }
 
         // Se o jogador não tiver mais tentativas
@@ -227,6 +235,7 @@ public class Interface : MonoBehaviour
         {
             painelDerrota.SetActive(true);
             botaoTentarNovamente.SetActive(false);
+            gameManager.GetComponent<GameManager>().logEventos.SetActive(false);
         }
     }
 
