@@ -30,7 +30,7 @@ public class LogEventos : MonoBehaviour
 
         foreach (string log in fila)
         {
-            MeuTexto += "[ " + log + " ]";
+            MeuTexto += log;
             MeuTexto += "\n";
         }
     }

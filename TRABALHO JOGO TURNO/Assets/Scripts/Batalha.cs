@@ -61,13 +61,6 @@ public class Batalha : MonoBehaviour
                 StartCoroutine("CicloDeJogo");
             }
         }
-
-        // *REMOVER DEPOIS, APENAS PARA TESTE DE MUDANÇA DE COR*
-        if (Input.GetKeyDown("space"))
-        {
-            m_interface.GetComponent<Interface>().DefinirCorNPC();
-            
-        }
     }
 
     // Função genérica que retorna o índice de ataque final
@@ -141,7 +134,7 @@ public class Batalha : MonoBehaviour
             // ativa a condição de defesa e permite que o NPC entenda a condição
             ativarDefesa = true;
 
-            logEventos.GetComponent<LogEventos>().NovoEventoLog("Você usou defesa" );
+            logEventos.GetComponent<LogEventos>().NovoEventoLog("<color=#add8e6ff>Você usou defesa</color>");
             // começa o turno do NPC
             StartCoroutine("TempoTurno");            
         }
@@ -175,7 +168,7 @@ public class Batalha : MonoBehaviour
                 jogador.Vida = curaMaxima;
                 
                 //mostra a quantidade de cura do jogador
-                logEventos.GetComponent<LogEventos>().NovoEventoLog("Você curou: " + indiceCuraJogador);
+                logEventos.GetComponent<LogEventos>().NovoEventoLog("<color=green>Você curou: </color>" + indiceCuraJogador);
                 
                 // começa o turno do NPC
                 StartCoroutine("TempoTurno");
@@ -186,7 +179,7 @@ public class Batalha : MonoBehaviour
                 jogador.Vida += indiceCuraJogador;
 
                 // mostra a quantidade de cura do jogador
-                logEventos.GetComponent<LogEventos>().NovoEventoLog("Você curou: " + indiceCuraJogador);
+                logEventos.GetComponent<LogEventos>().NovoEventoLog("<color=green>Você curou:</color> " + indiceCuraJogador);
                 
                 // começa o turno do NPC
                 StartCoroutine("TempoTurno");
@@ -296,12 +289,12 @@ public class Batalha : MonoBehaviour
                 jogador.Vida -= indiceAtaqueNPC;
 
                 //mostra na tela o ataque do inimigo
-                logEventos.GetComponent<LogEventos>().NovoEventoLog("Inimigo atacou: " + indiceAtaqueNPC);
+                logEventos.GetComponent<LogEventos>().NovoEventoLog("<color=red>Inimigo atacou:</color> " + indiceAtaqueNPC);
             }
 
             else
             {
-                logEventos.GetComponent<LogEventos>().NovoEventoLog("Inimigo atacou: " + indiceAtaqueNPC);
+                logEventos.GetComponent<LogEventos>().NovoEventoLog("<color=red>Inimigo atacou:</color> " + indiceAtaqueNPC);
                 // A vida do Jogador é setada para 0
                 jogador.Vida = 0;
                 turno = false;
@@ -335,7 +328,7 @@ public class Batalha : MonoBehaviour
             }
 
             //Mostra na tela o ataque do inimigo
-            logEventos.GetComponent<LogEventos>().NovoEventoLog("Inimigo atacou: " + indiceAtaqueNPC);           
+            logEventos.GetComponent<LogEventos>().NovoEventoLog("<color=red>Inimigo atacou:</color> " + indiceAtaqueNPC);           
         }
 
         // muda o valor de ativar defesa e permite que o jogador use a habilidade novamente
@@ -349,7 +342,7 @@ public class Batalha : MonoBehaviour
 
         if (vidaNPC > 0)
         {
-            logEventos.GetComponent<LogEventos>().NovoEventoLog("Turno do Inimigo");
+            logEventos.GetComponent<LogEventos>().NovoEventoLog("<color=#ffa500ff>Turno do Inimigo</color>");
         }
 
         // espera o tempo estipulado para atacar
@@ -368,10 +361,9 @@ public class Batalha : MonoBehaviour
         if (jogadorVida > 0 && vidaNPC > 0)
         {
             turno = true;
-            logEventos.GetComponent<LogEventos>().NovoEventoLog("Seu turno");
+            logEventos.GetComponent<LogEventos>().NovoEventoLog("<color=#ff00ffff>Seu turno</color>");
         }               
     }
-
 
     // Corotina que controla o ciclo de jogo, gerando mais inimigos e ativando a ação de fim de jogo 
     IEnumerator CicloDeJogo()
@@ -384,7 +376,7 @@ public class Batalha : MonoBehaviour
                 // Outro inimigo é gerado
                 npc.GerarNPC();
                 // mensagem que avisa que novo inimigo foi gerado
-                logEventos.GetComponent<LogEventos>().NovoEventoLog("Novo Inimigo apareceu!");
+                logEventos.GetComponent<LogEventos>().NovoEventoLog("<color=#800080ff>Você foi reinfectado!</color>");
                 // Outra cor é definida para o NPC
                 m_interface.GetComponent<Interface>().DefinirCorNPC();
             }
@@ -412,7 +404,6 @@ public class Batalha : MonoBehaviour
             fimDeJogo = true;
             yield return new WaitForSeconds(tempo);            
             NaVitoria.Invoke();
-            Debug.Log("VITORIA");
         }
 
         // Se o jogador morreu e não há mais tentativas
@@ -420,7 +411,6 @@ public class Batalha : MonoBehaviour
         {
             fimDeJogo = true;
             NaDerrota.Invoke();            
-            Debug.Log("DERROTA");
         }
     }
 }

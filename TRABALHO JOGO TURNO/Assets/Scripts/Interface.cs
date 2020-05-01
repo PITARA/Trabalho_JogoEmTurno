@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Interface : MonoBehaviour
 {
@@ -32,13 +33,12 @@ public class Interface : MonoBehaviour
         painelJogar.SetActive(true);
         painelClasse.SetActive(true);
         painelNome.SetActive(true);
-        
-        
+        painelDerrota.SetActive(false);
+        painelVitoria.SetActive(false);
     }
 
     private void Update()
     {
-        
         // Se o jogador tiver sido gerado
         if (Batalha.jogador != null)
         {
@@ -193,7 +193,6 @@ public class Interface : MonoBehaviour
         Batalha.jogador.Vida = Batalha.jogador.VidaInicial;
         painelDerrota.SetActive(false);
         batalha.GetComponent<Batalha>().logEventos.SetActive(true);
-        Debug.Log("funcionou?");
     }
 
     // Função que atualiza a UI com as informações de vida e nome do NPC
