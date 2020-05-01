@@ -2,17 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Interface : MonoBehaviour
 {
     #region Variáveis
 
-    [SerializeField] private GameObject painelJogar, painelClasse, painelNome, inputField, displayNomeJogador, displayClasseJogador, displayVidaJogador, displayVidaNPC;
+    [SerializeField]
+    private GameObject painelJogar, painelClasse, painelNome, painelVitoria, inputField, displayNomeJogador, displayClasseJogador, displayVidaJogador,
+     displayVidaNPC, displayIndiceNPC, batalha, botaoTentarNovamente;
+
+    public GameObject painelDerrota;
+
+    [SerializeField] private Button botaoAtacar, botaoDefender, botaoHab1, botaoHab2;
+
+    [SerializeField] private RawImage imagemClasseEscolhida, imagemClasseAlcooGel, imagemClasseSabao, imagemClasseMascara;
+
+    public Material materialNPC, materialDetalhesNPC;
 
     public string nomeJogador, classeJogador;
-    private int vidaJogador, vidaNPC;
+    private int vidaJogador, vidaNPC, indiceNPC;
 
-    #endregion Variáveis
+    private Color corPadraoBotoes = new Color(66, 214, 255);
+    
+    #endregion
 
     private void Awake()
     {
@@ -20,15 +33,33 @@ public class Interface : MonoBehaviour
         painelJogar.SetActive(true);
         painelClasse.SetActive(true);
         painelNome.SetActive(true);
+        painelDerrota.SetActive(false);
+        painelVitoria.SetActive(false);
     }
 
     private void Update()
     {
         // Se o jogador tiver sido gerado
-        if (GameManager.jogador != null)
+        if (Batalha.jogador != null)
         {
             // Atualizar a interface com as vidas atuais
-            AtualizarVidasUI();
+            AtualizarInfoUI();
+        }
+
+        // Muda as cores dos botões para mostrar que eles não podem ser clicados
+        if (batalha.GetComponent<Batalha>().turno == false)
+        {
+            botaoAtacar.GetComponent<Image>().color = Color.gray;
+            botaoDefender.GetComponent<Image>().color = Color.gray;
+            botaoHab1.GetComponent<Image>().color = Color.gray;
+            botaoHab2.GetComponent<Image>().color = Color.gray;
+        }
+        else
+        {
+            botaoAtacar.GetComponent<Image>().color = corPadraoBotoes;
+            botaoDefender.GetComponent<Image>().color = corPadraoBotoes;
+            botaoHab1.GetComponent<Image>().color = corPadraoBotoes;
+            botaoHab2.GetComponent<Image>().color = corPadraoBotoes;
         }
     }
 
@@ -59,17 +90,17 @@ public class Interface : MonoBehaviour
         }
         else // Se o painelClasse estiver ativo na hierarquia
         {
-            GameManager.jogador = new Classe1();
+            Batalha.jogador = new Classe1();
 
             // O painelClasse será desativado
             painelClasse.SetActive(false);
             // A classe do jogador será definida como Classe1
-            GameManager.jogador.DefinirClasse();
+            Batalha.jogador.DefinirClasse();
             // Nome da classe do jogador é alocado em variável que será usada pela interface
-            classeJogador = GameManager.jogador.NomeClasse;
+            classeJogador = Batalha.jogador.NomeClasse;
 
-            // ** INFORMAÇÃO NO CONSOLE PARA CONTROLE, REMOVER DEPOIS **
-            GameManager.jogador.PegarInfo();
+            // Imagem da classe escolhida pelo player é definida na interface
+            imagemClasseEscolhida.texture = imagemClasseAlcooGel.texture;
         }
     }
 
@@ -84,17 +115,17 @@ public class Interface : MonoBehaviour
         }
         else // Se o painelClasse estiver ativo na hierarquia
         {
-            GameManager.jogador = new Classe2();
+            Batalha.jogador = new Classe2();
 
             // O painelClasse será desativado
             painelClasse.SetActive(false);
             // A classe do jogador será definida como Classe2
-            GameManager.jogador.DefinirClasse();
+            Batalha.jogador.DefinirClasse();
             // Nome da classe do jogador é alocado em variável que será usada pela interface
-            classeJogador = GameManager.jogador.NomeClasse;
+            classeJogador = Batalha.jogador.NomeClasse;
 
-            // ** INFORMAÇÃO NO CONSOLE PARA CONTROLE, REMOVER DEPOIS **
-            GameManager.jogador.PegarInfo();
+            // Imagem da classe escolhida pelo player é definida na interface
+            imagemClasseEscolhida.texture = imagemClasseSabao.texture;
         }
     }
 
@@ -109,17 +140,17 @@ public class Interface : MonoBehaviour
         }
         else // Se o painelClasse estiver ativo na hierarquia
         {
-            GameManager.jogador = new Classe3();
+            Batalha.jogador = new Classe3();
 
             // O painelClasse será desativado
             painelClasse.SetActive(false);
             // A classe do jogador será definida como Classe3
-            GameManager.jogador.DefinirClasse();
+            Batalha.jogador.DefinirClasse();
             // Nome da classe do jogador é alocado em variável que será usada pela interface
-            classeJogador = GameManager.jogador.NomeClasse;
+            classeJogador = Batalha.jogador.NomeClasse;
 
-            // ** INFORMAÇÃO NO CONSOLE PARA CONTROLE, REMOVER DEPOIS **
-            GameManager.jogador.PegarInfo();
+            // Imagem da classe escolhida pelo player é definida na interface
+            imagemClasseEscolhida.texture = imagemClasseMascara.texture;
         }
     }
 
@@ -156,11 +187,87 @@ public class Interface : MonoBehaviour
         displayClasseJogador.GetComponent<Text>().text = classeJogador;
     }
 
-    public void AtualizarVidasUI()
+    // Função para resetar a vida do jogador e desativar o painel de derrota por um botão
+    public void BotaoTentarNovamente()
     {
-        vidaJogador = GameManager.jogador.Vida;
+        Batalha.jogador.Vida = Batalha.jogador.VidaInicial;
+        painelDerrota.SetActive(false);
+        batalha.GetComponent<Batalha>().logEventos.SetActive(true);
+    }
+
+    // Função que atualiza a UI com as informações de vida e nome do NPC
+    public void AtualizarInfoUI()
+    {
+        // Variável recebe a quantidade de vida do jogador
+        vidaJogador = Batalha.jogador.Vida;
+        // Associada a variável de vida do jogador com a interface
         displayVidaJogador.GetComponent<Text>().text = vidaJogador.ToString();
-        vidaNPC = GameManager.npc.Vida;
+        // Variável recebe a quantidade de vida do NPC
+        vidaNPC = Batalha.npc.Vida;
+        // Associada a variável de vida do NPC com a interface
         displayVidaNPC.GetComponent<Text>().text = vidaNPC.ToString();
+        // Variável recebe índice do NPC
+        indiceNPC = Batalha.npc.IndiceNPC;
+        // Associada o índice do NPC com a interface
+        displayIndiceNPC.GetComponent<Text>().text = indiceNPC.ToString();
+    }
+
+    // Função que ativa a tela de vitória
+    public void AtivarTelaVitoria()
+    {
+        painelVitoria.SetActive(true);
+        batalha.GetComponent<Batalha>().logEventos.SetActive(false);
+    }
+
+    // Função que ativa a tela de derrota
+    public void AtivarTelaDerrota()
+    {
+        // Se o jogador ainda tiver tentativas restando
+        if (Batalha.jogador.TentativasJogador > 0)
+        {
+            painelDerrota.SetActive(true);
+            batalha.GetComponent<Batalha>().logEventos.SetActive(false);
+        }
+
+        // Se o jogador não tiver mais tentativas
+        if(Batalha.jogador.TentativasJogador == 0)
+        {
+            painelDerrota.SetActive(true);
+            botaoTentarNovamente.SetActive(false);
+            batalha.GetComponent<Batalha>().logEventos.SetActive(false);
+        }
+    }
+
+    public void DefinirCorNPC()
+    {
+        // Pega uma cor aleatória para o NPC
+        Color novaCor = new Color(Random.value, Random.value, Random.value, 1.0f);
+        // Define o NPC com cor nova
+        materialNPC.color = novaCor;
+
+        // Pega uma cor aleatória para os detalhes do NPC
+        Color novaCorDetalhes = new Color(Random.value, Random.value, Random.value, 1.0f);
+        
+        // Enquanto a cor do NPC for igual a cor dos detalhes dele
+        while (novaCor == novaCorDetalhes)
+        {
+            // Uma nova cor será escolhida
+            novaCorDetalhes = new Color(Random.value, Random.value, Random.value, 1.0f);           
+        }
+
+        // Define os detalhes do NPC com a cor nova
+        materialDetalhesNPC.color = novaCorDetalhes;
+    }
+
+    private void OnEnable()
+    {
+        Batalha.NaVitoria += AtivarTelaVitoria;
+        Batalha.NaDerrota += AtivarTelaDerrota;
+    }
+
+    private void OnDisable()
+    {
+        Batalha.NaVitoria -= AtivarTelaVitoria;
+        Batalha.NaDerrota -= AtivarTelaDerrota;
     }
 }
