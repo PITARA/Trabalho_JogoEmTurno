@@ -30,10 +30,8 @@ public class Batalha : MonoBehaviour
 
     private void Awake()
     {
-        // Gera um inimigo no início do jogo para teste * VAI MUDAR DE LUGAR DEPOIS *
         npc.GerarNPC();
         m_interface.GetComponent<Interface>().DefinirCorNPC();
-        
     }
 
     private void Start()
