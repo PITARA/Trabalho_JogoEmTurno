@@ -17,17 +17,6 @@ public abstract class Jogador
 
     #endregion
 
-    // ** INFORMAÇÃO NO CONSOLE PARA CONTROLE, REMOVER DEPOIS **
-    public void PegarInfo()
-    {
-        Debug.Log("A classe escolhida foi " + NomeClasse);
-        Debug.Log("Vida: " + Vida);
-        Debug.Log("Ataque: " + Ataque);
-        Debug.Log("Defesa: " + Defesa);
-        Debug.Log("Indice de Habilidade de Cura: " + IndiceHabilidadeCura);
-        Debug.Log("Indice de Habilidade de Ataque: " + IndiceHabilidadeAtaque);
-    }
-
     // Função abstrata que define atributos de classe
     public abstract void DefinirClasse();
 
